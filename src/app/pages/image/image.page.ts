@@ -22,7 +22,8 @@ export class ImagePage implements OnInit {
   }
 
 
-  loadData(event): void {
+  // Infinite scroll use it to load images dynamically
+  public loadData(event): void {
     console.log('Loading images...');
     const finishedFlag: boolean = this.loadMoreImages();
     console.log(this.loadedImages);
@@ -34,6 +35,7 @@ export class ImagePage implements OnInit {
   }
 
 
+  // Every time this funtion is called, will load a few images into 'loadedImages'.
   private loadMoreImages(): boolean {
     const newImages = this.imageService.getNextImages();
     this.loadedImages = this.loadedImages.concat(newImages);
@@ -42,6 +44,7 @@ export class ImagePage implements OnInit {
   }
 
 
+  // New search process
   public filterImages(event: CustomEvent): void {
     this.loadedImages = [];
     this.imageService.filterImages(event.detail.value);
