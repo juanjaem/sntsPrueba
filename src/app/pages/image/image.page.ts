@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonInfiniteScroll } from '@ionic/angular';
 import { Image } from 'src/app/interfaces/image.interface';
 import { ImageService } from 'src/app/services/image.service';
 
@@ -9,7 +10,8 @@ import { ImageService } from 'src/app/services/image.service';
 })
 export class ImagePage implements OnInit {
 
-  loadedImages: Image[] = [];
+  loadedImages: Image[] = []; // The images to be shown
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   constructor(
     public imageService: ImageService,
@@ -37,6 +39,14 @@ export class ImagePage implements OnInit {
     this.loadedImages = this.loadedImages.concat(newImages);
 
     return newImages.length === 0 ? true : false; // Return true if there are not more images
+  }
+
+
+  public filterImages(event: CustomEvent): void {
+    this.loadedImages = [];
+    this.imageService.filterImages(event.detail.value);
+    this.loadMoreImages();
+    this.infiniteScroll.disabled = false;
   }
 
 }

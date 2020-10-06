@@ -8,12 +8,13 @@ import { Image } from '../interfaces/image.interface';
 })
 export class ImageService {
 
-  private imgArr: Image[] = [];
-  private lastImage: number = 0;
+  private imgArr: Image[] = [];         // All the images
+  private filteredImages: Image[] = []; // Only the searched images
+  private lastImage: number = 0;        // Pagination position
 
   constructor() {
     this.imgArr = this.imageArrayGenerator();
-    console.log(this.imgArr);
+    this.filteredImages = this.imgArr.slice();
   }
 
 
@@ -43,14 +44,28 @@ export class ImageService {
   }
 
 
+  filterImages(search: string = '') {
+    this.filteredImages = [];
+    this.lastImage = 0;
+    this.filteredImages = this.imgArr.filter( (image: Image) => {
+      if ( image.id.search(search) !== -1 || image.text.search(search) !== -1 ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+
   public getNextImages(): Image[] {
-    if (this.lastImage >= this.imgArr.length - 1) {
+    if (this.lastImage > this.filteredImages.length - 1) {
       return [];
     }
+
     const from = this.lastImage;
     const to = this.lastImage + 10;
     this.lastImage = to;
-    return this.imgArr.slice(from, to);
+    return this.filteredImages.slice(from, to);
   }
 
 }
