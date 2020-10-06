@@ -43,7 +43,7 @@ export class ImageService {
 
   // Generates a random name
   private generateRandomText(lengthOfCode: number = 10): string {
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let text = '';
     for (let i = 0; i < lengthOfCode; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
