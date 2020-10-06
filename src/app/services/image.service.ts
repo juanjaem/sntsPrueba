@@ -8,7 +8,8 @@ import { Image } from '../interfaces/image.interface';
 })
 export class ImageService {
 
-  imgArr: Image[] = [];
+  private imgArr: Image[] = [];
+  private lastImage: number = 0;
 
   constructor() {
     this.imgArr = this.imageArrayGenerator();
@@ -16,13 +17,13 @@ export class ImageService {
   }
 
 
-  imageArrayGenerator(): Image[] {
+  private imageArrayGenerator(): Image[] {
     const imgArr: Image[] = [];
 
     for (let i = 1; i <= 4000; i++) {
       const imgElem: Image  = {
         id: i.toString(),
-        photo: `https://i.picsum.photos/id/${i}/500/500`,
+        photo: `https://picsum.photos/id/${i}/500/500`,
         text: this.generateRandomText()
       };
       imgArr.push(imgElem);
@@ -39,6 +40,17 @@ export class ImageService {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
+  }
+
+
+  public getNextImages(): Image[] {
+    if (this.lastImage >= this.imgArr.length - 1) {
+      return [];
+    }
+    const from = this.lastImage;
+    const to = this.lastImage + 10;
+    this.lastImage = to;
+    return this.imgArr.slice(from, to);
   }
 
 }
