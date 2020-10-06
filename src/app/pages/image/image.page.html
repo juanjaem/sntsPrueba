@@ -9,7 +9,9 @@
   <ion-list>
     <ion-item *ngFor="let img of loadedImages">
       <ion-thumbnail slot="start">
-        <ion-img [src]="img.photo"></ion-img>
+        <ion-img [src]="img.photo"
+                 (ionError)="img.photo = '../../assets/images/no-image.png'">
+        </ion-img>
       </ion-thumbnail>
       <ion-label>{{img.text}}</ion-label>
     </ion-item>
