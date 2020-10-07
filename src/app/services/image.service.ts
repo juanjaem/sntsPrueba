@@ -52,7 +52,7 @@ export class ImageService {
   }
 
 
-  // Used to set de search filter
+  // Search fuction
   public filterImages(search: string = ''): void {
     this.filteredImages = [];
     this.lastImage = 0;
@@ -63,13 +63,55 @@ export class ImageService {
       return;
     }
 
+    const letters = [...search]; // letters to contain the strings
+
+    // Filtering the images with a predictive search
     this.filteredImages = this.imgArr.filter( (image: Image) => {
-      if ( image.id.search(search) !== -1 || image.text.search(search) !== -1 ) {
-        return true;
-      } else {
-        return false;
+      let lastPosition = 0;
+      let test1: boolean = false;
+      let test2: boolean = false;
+
+      // Predictive search in 'text' field
+      test1 = letters.every( x => {
+        // return image.text.search(x) !== -1 ? true : false;
+        const idx = image.text.indexOf(x, lastPosition);
+        if (idx !== -1) {
+          lastPosition = idx + 1;
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      if (!test1) {
+        // Nothing found in 'text' field... let's try in 'id' field
+        // Predictive search in 'id' field
+        lastPosition = 0;
+        test2 = letters.every( x => {
+          // return image.text.search(x) !== -1 ? true : false;
+          const idx = image.id.indexOf(x, lastPosition);
+          if (idx !== -1) {
+            lastPosition = idx + 1;
+            return true;
+          } else {
+            return false;
+          }
+        });
       }
+
+      return test1 || test2 ? true : false;
     });
+
+
+    // ----- OLD FILTER, REPLACED FOR A PREDICTIVE ONE ----------------
+    // this.filteredImages = this.imgArr.filter( (image: Image) => {
+    //   if ( image.id.search(search) !== -1 || image.text.search(search) !== -1 ) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // });
+    // ------------------------------------------------------------------
   }
 
 
@@ -80,7 +122,7 @@ export class ImageService {
     }
 
     const from = this.lastImage;
-    const to = this.lastImage + 10;
+    const to = this.lastImage + 40;
     this.lastImage = to;
     return this.filteredImages.slice(from, to);
   }
